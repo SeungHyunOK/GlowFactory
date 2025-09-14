@@ -1,103 +1,158 @@
+"use client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <main className="min-h-screen bg-white">
+      {/* Hero */}
+      <section className="w-full bg-slate-900">
+        <div className="mx-auto max-w-7xl px-6 py-16 text-center text-white">
+          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
+            브랜드와 인플루언서를 더 똑똑하게 연결합니다
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-300 md:text-lg">
+            GlowFactory는 데이터와 직관을 결합해 브랜드의 캠페인 성과를 높이고, 인플루언서의 가치가
+            제대로 전달되도록 돕습니다.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href="/campaigns"
+              className="inline-flex items-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-100"
+              aria-label="캠페인 둘러보기"
+            >
+              캠페인 둘러보기
+            </Link>
+            <Link
+              href="/discovery"
+              className="inline-flex items-center rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
+              aria-label="인플루언서 찾기"
+            >
+              인플루언서 찾기
+            </Link>
+          </div>
+          <div className="mt-10">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/images/mainbanner.png"
+              alt="GlowFactory 메인 배너"
+              width={960}
+              height={480}
+              className="mx-auto rounded-2xl shadow-lg ring-1 ring-white/10"
+              priority
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* How it works */}
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900">제품 사용법</h2>
+          <p className="mx-auto mt-2 max-w-xl text-slate-600">
+            브랜드와 인플루언서 모두에게 간단한 3단계 프로세스
+          </p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
+          {/* 브랜드(광고주) */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-900">브랜드(광고주)</h3>
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500">STEP 1</p>
+                <h4 className="mt-1 font-semibold text-slate-800">준비하기</h4>
+                <Image
+                  src="/images/step1_marketer.png"
+                  alt="브랜드 준비하기"
+                  width={300}
+                  height={300}
+                  className="mt-3 rounded-lg"
+                />
+                <p className="mt-2 text-sm text-slate-600">
+                  이메일/소셜 로그인 후 브랜드 프로필 작성
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500">STEP 2</p>
+                <h4 className="mt-1 font-semibold text-slate-800">캠페인 만들기</h4>
+                <Image
+                  src="/images/step2_marketer.png"
+                  alt="캠페인 만들기"
+                  width={300}
+                  height={300}
+                  className="mt-3 rounded-lg"
+                />
+                <p className="mt-2 text-sm text-slate-600">
+                  목적·조건·보상·일정 등록 후 AI 추천 확인
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500">STEP 3</p>
+                <h4 className="mt-1 font-semibold text-slate-800">협업</h4>
+                <Image
+                  src="/images/step3_marketer.png"
+                  alt="브랜드 협업 진행"
+                  width={300}
+                  height={300}
+                  className="mt-3 rounded-lg"
+                />
+                <p className="mt-2 text-sm text-slate-600">
+                  제안서 승인·메시지 조율·콘텐츠 검수 후 완료
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 인플루언서 */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-900">인플루언서</h3>
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500">STEP 1</p>
+                <h4 className="mt-1 font-semibold text-slate-800">준비하기</h4>
+                <Image
+                  src="/images/step1_influencer.png"
+                  alt="인플루언서 준비하기"
+                  width={300}
+                  height={300}
+                  className="mt-3 rounded-lg"
+                />
+                <p className="mt-2 text-sm text-slate-600">
+                  회원가입 후 프로필(카테고리·채널·팔로워·참여율) 작성
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500">STEP 2</p>
+                <h4 className="mt-1 font-semibold text-slate-800">캠페인 찾기</h4>
+                <Image
+                  src="/images/step2_influencer.png"
+                  alt="캠페인 찾기"
+                  width={300}
+                  height={300}
+                  className="mt-3 rounded-lg"
+                />
+                <p className="mt-2 text-sm text-slate-600">
+                  조건 검색·AI 추천 확인 후 지원 및 제안서 제출
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500">STEP 3</p>
+                <h4 className="mt-1 font-semibold text-slate-800">협업</h4>
+                <Image
+                  src="/images/step3_marketer.png"
+                  alt="인플루언서 협업 진행"
+                  width={300}
+                  height={300}
+                  className="mt-3 rounded-lg"
+                />
+                <p className="mt-2 text-sm text-slate-600">
+                  커뮤니케이션·콘텐츠 제작·업로드 후 완료 및 히스토리 관리
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
