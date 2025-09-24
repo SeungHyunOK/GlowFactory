@@ -1,18 +1,11 @@
-import { supabase } from "@/lib/supabaseClient";
-
-// 캠페인 목록 조회
+// 캠페인 목록 조회 (API)
 export async function fetchCampaigns() {
-  const { data, error } = await supabase
-    .from("campaigns")
-    .select("id, title, summary, channels, start_date, end_date, status, created_at, updated_at")
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  if (error) throw error;
-  return data;
+  const res = await fetch("/api/campaigns", { cache: "no-store" });
+  if (!res.ok) throw new Error("캠페인 조회 실패");
+  return (await res.json()) as unknown;
 }
 
-//캠페인 생성
+// 캠페인 생성 (API)
 export async function createCampaign(input: {
   title: string;
   summary?: string;
@@ -21,38 +14,27 @@ export async function createCampaign(input: {
   end_date?: string;
   status?: "draft" | "published" | "closed";
 }) {
-  const { data, error } = await supabase
-    .from("campaigns")
-    .insert([
-      {
-        title: input.title,
-        summary: input.summary ?? null,
-        channels: input.channels ?? ["instagram"],
-        start_date: input.start_date ?? null,
-        end_date: input.end_date ?? null,
-        status: input.status ?? "draft",
-      },
-    ])
-    .select(); // 생성된 행 반환
-
-  if (error) throw error;
-  return data?.[0];
+  const res = await fetch("/api/campaigns", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error("캠페인 생성 실패");
+  return (await res.json()) as unknown;
 }
 
 export async function updateCampaignStatus(id: string, status: "draft" | "published" | "closed") {
-  const { data, error } = await supabase
-    .from("campaigns")
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq("id", id)
-    .select();
-
-  if (error) throw error;
-  return data?.[0];
+  const res = await fetch(`/api/campaigns/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error("캠페인 상태 변경 실패");
+  return (await res.json()) as unknown;
 }
 
 export async function deleteCampaign(id: string) {
-  const { error } = await supabase.from("campaigns").delete().eq("id", id);
-
-  if (error) throw error;
+  const res = await fetch(`/api/campaigns/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error("캠페인 삭제 실패");
   return true;
 }
