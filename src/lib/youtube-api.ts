@@ -249,9 +249,9 @@ export function convertYouTubeToInfluencerData(
     avg_likes: avgLikes,
     categories: ["YouTube", "Content Creator"], // 기본 카테고리
     verified: false, // YouTube API에서 직접 확인할 수 없으므로 기본값
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     profile_image_url:
-      (channelData.thumbnails as any)?.high?.url || (channelData.thumbnails as any)?.default?.url,
+      ((channelData.thumbnails as Record<string, unknown>)?.high as Record<string, unknown>)?.url as string || 
+      ((channelData.thumbnails as Record<string, unknown>)?.default as Record<string, unknown>)?.url as string,
     bio: channelData.description as string,
     location: "", // YouTube API에서 직접 제공하지 않음
   };

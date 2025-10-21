@@ -431,9 +431,9 @@ export function convertYouTubeToInfluencerDataOptimized(
     avg_likes: avgLikes,
     categories: ["Lifestyle"], // 기본 카테고리
     verified: (channelData.subscriberCount as number) > 1000000, // 100만 구독자 이상을 인증으로 간주
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     profile_image_url:
-      (channelData.thumbnails as any)?.high?.url || (channelData.thumbnails as any)?.medium?.url,
+      ((channelData.thumbnails as Record<string, unknown>)?.high as Record<string, unknown>)?.url as string || 
+      ((channelData.thumbnails as Record<string, unknown>)?.medium as Record<string, unknown>)?.url as string,
     bio: channelData.description as string,
     total_views: channelData.viewCount as number,
     video_count: channelData.videoCount as number,
