@@ -9,7 +9,7 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const GOOGLE_AI_API_KEY = process.env.GOOGLE_AI_API_KEY;
 
 interface AIResponse {
-  influencers: any[];
+  influencers: Record<string, unknown>[];
   reasoning: string;
   categories: string[];
   targetAudience: string;
@@ -67,7 +67,7 @@ async function callOpenAI(query: string): Promise<AIResponse> {
 
   try {
     return JSON.parse(content);
-  } catch (error) {
+  } catch {
     // JSON 파싱 실패 시 기본 응답
     return {
       influencers: [],
@@ -113,7 +113,8 @@ async function callAnthropic(query: string): Promise<AIResponse> {
   };
 }
 
-// 사용 가능한 모델 목록 확인
+// 사용 가능한 모델 목록 확인 (현재 사용하지 않음)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getAvailableModels(): Promise<string[]> {
   try {
     const response = await fetch(
@@ -126,11 +127,11 @@ async function getAvailableModels(): Promise<string[]> {
     }
 
     const data = await response.json();
-    const models = data.models?.map((model: any) => model.name) || [];
+    const models = data.models?.map((model: Record<string, unknown>) => model.name) || [];
     console.log("사용 가능한 모델들:", models);
     return models;
-  } catch (error) {
-    console.log("모델 목록 조회 오류:", error);
+  } catch {
+    console.log("모델 목록 조회 오류");
     return ["gemini-1.5-flash"];
   }
 }
@@ -230,7 +231,7 @@ async function callGoogleAI(query: string): Promise<AIResponse> {
         // JSON 파싱 시도
         const parsedResponse = JSON.parse(content);
         return parsedResponse;
-      } catch (parseError) {
+      } catch {
         // JSON 파싱 실패 시 마크다운에서 JSON 추출
         console.log("JSON 파싱 실패, 마크다운에서 JSON 추출 시도");
 
@@ -261,7 +262,7 @@ async function callGoogleAI(query: string): Promise<AIResponse> {
       console.error(`Google AI API 호출 오류 (시도 ${attempt}/${maxRetries}):`, error);
 
       // 마지막 시도가 아니고 503 오류인 경우 재시도
-      if (attempt < maxRetries && error.message.includes("503")) {
+      if (attempt < maxRetries && error instanceof Error && error.message.includes("503")) {
         console.log(`${retryDelay}ms 후 재시도... (${attempt + 1}/${maxRetries})`);
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
         continue;
@@ -275,7 +276,7 @@ async function callGoogleAI(query: string): Promise<AIResponse> {
 }
 
 // 마크다운에서 인플루언서 정보 추출
-function extractInfluencersFromMarkdown(content: string): any[] {
+function extractInfluencersFromMarkdown(content: string): Record<string, unknown>[] {
   const influencers = [];
 
   // JSON 블록에서 인플루언서 정보 추출
@@ -294,7 +295,7 @@ function extractInfluencersFromMarkdown(content: string): any[] {
 
   // 마크다운 텍스트에서 인플루언서 정보 추출
   const lines = content.split("\n");
-  let currentInfluencer: any = null;
+  let currentInfluencer: Record<string, unknown> | null = null;
 
   for (const line of lines) {
     const trimmedLine = line.trim();
@@ -403,7 +404,7 @@ async function searchYouTubeChannel(channelName: string) {
     }
 
     const channelId = searchData.items[0].id.channelId;
-    const channelSnippet = searchData.items[0].snippet;
+    // const channelSnippet = searchData.items[0].snippet; // 현재 사용하지 않음
 
     // 2. 채널 상세 정보 가져오기
     const channelResponse = await fetch(
@@ -435,7 +436,9 @@ async function searchYouTubeChannel(channelName: string) {
       const videosData = await videosResponse.json();
       if (videosData.items && videosData.items.length > 0) {
         // 비디오 ID들로 상세 정보 가져오기
-        const videoIds = videosData.items.map((item: any) => item.id.videoId).join(",");
+        const videoIds = videosData.items
+          .map((item: Record<string, unknown>) => (item.id as Record<string, unknown>)?.videoId)
+          .join(",");
         const videoDetailsResponse = await fetch(
           `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${GOOGLE_API_KEY}`,
         );
@@ -443,9 +446,17 @@ async function searchYouTubeChannel(channelName: string) {
         if (videoDetailsResponse.ok) {
           const videoDetails = await videoDetailsResponse.json();
           if (videoDetails.items) {
-            const totalLikes = videoDetails.items.reduce((sum: number, video: any) => {
-              return sum + parseInt(video.statistics.likeCount || 0);
-            }, 0);
+            const totalLikes = videoDetails.items.reduce(
+              (sum: number, video: Record<string, unknown>) => {
+                return (
+                  sum +
+                  parseInt(
+                    ((video.statistics as Record<string, unknown>)?.likeCount as string) || "0",
+                  )
+                );
+              },
+              0,
+            );
             avgLikes = Math.floor(totalLikes / videoDetails.items.length);
           }
         }
@@ -522,10 +533,10 @@ async function matchWithRealInfluencers(aiResponse: AIResponse, query: string) {
 
       // AI가 추천한 인플루언서들을 YouTube API로 검색하여 실제 데이터 수집
       const enrichedInfluencers = await Promise.all(
-        aiResponse.influencers.map(async (inf, index) => {
+        aiResponse.influencers.map(async (inf) => {
           try {
             // YouTube API로 채널 정보 검색
-            const youtubeData = await searchYouTubeChannel(inf.name);
+            const youtubeData = await searchYouTubeChannel(inf.name as string);
 
             if (youtubeData) {
               return {
@@ -547,21 +558,23 @@ async function matchWithRealInfluencers(aiResponse: AIResponse, query: string) {
             } else {
               // YouTube API 검색 실패 시 AI 추천 데이터 사용
               return {
-                name: inf.name,
-                handle: inf.name.toLowerCase().replace(/\s+/g, ""),
+                name: inf.name as string,
+                handle: (inf.name as string).toLowerCase().replace(/\s+/g, ""),
                 platform: "youtube" as const,
                 followers:
                   typeof inf.followers === "number"
                     ? inf.followers
-                    : parseInt(inf.followers.toString().replace(/[^\d]/g, "")) || 1000000,
+                    : parseInt((inf.followers as string).toString().replace(/[^\d]/g, "")) ||
+                      1000000,
                 engagement_rate:
                   typeof inf.engagement_rate === "number"
                     ? inf.engagement_rate
-                    : parseFloat(inf.engagement_rate.toString()) || 3.0,
+                    : parseFloat((inf.engagement_rate as string).toString()) || 3.0,
                 avg_likes: Math.floor(
                   (typeof inf.followers === "number"
                     ? inf.followers
-                    : parseInt(inf.followers.toString().replace(/[^\d]/g, "")) || 1000000) * 0.05,
+                    : parseInt((inf.followers as string).toString().replace(/[^\d]/g, "")) ||
+                      1000000) * 0.05,
                 ),
                 categories: inf.categories || ["Lifestyle"],
                 verified: true,
@@ -575,21 +588,22 @@ async function matchWithRealInfluencers(aiResponse: AIResponse, query: string) {
             console.error(`YouTube API 검색 실패 (${inf.name}):`, error);
             // 오류 발생 시 AI 추천 데이터 사용
             return {
-              name: inf.name,
-              handle: inf.name.toLowerCase().replace(/\s+/g, ""),
+              name: inf.name as string,
+              handle: (inf.name as string).toLowerCase().replace(/\s+/g, ""),
               platform: "youtube" as const,
               followers:
                 typeof inf.followers === "number"
                   ? inf.followers
-                  : parseInt(inf.followers.toString().replace(/[^\d]/g, "")) || 1000000,
+                  : parseInt((inf.followers as string).toString().replace(/[^\d]/g, "")) || 1000000,
               engagement_rate:
                 typeof inf.engagement_rate === "number"
                   ? inf.engagement_rate
-                  : parseFloat(inf.engagement_rate.toString()) || 3.0,
+                  : parseFloat((inf.engagement_rate as string).toString()) || 3.0,
               avg_likes: Math.floor(
                 (typeof inf.followers === "number"
                   ? inf.followers
-                  : parseInt(inf.followers.toString().replace(/[^\d]/g, "")) || 1000000) * 0.05,
+                  : parseInt((inf.followers as string).toString().replace(/[^\d]/g, "")) ||
+                    1000000) * 0.05,
               ),
               categories: inf.categories || ["Lifestyle"],
               verified: true,
@@ -624,7 +638,7 @@ async function matchWithRealInfluencers(aiResponse: AIResponse, query: string) {
         );
 
         // 추가된 인플루언서들에 AI 점수 추가하여 반환
-        return insertedInfluencers.map((inf, index) => ({
+        return insertedInfluencers.map((inf) => ({
           ...inf,
           aiScore: Math.round((85 + Math.random() * 15) * 10) / 10, // 85.0-100.0점 사이 (소수점 첫째 자리)
         }));
@@ -643,7 +657,7 @@ async function matchWithRealInfluencers(aiResponse: AIResponse, query: string) {
     const scoredInfluencers = influencers
       .map((influencer) => ({
         ...influencer,
-        aiScore: calculateAIScore(influencer, aiResponse, query),
+        aiScore: calculateAIScore(influencer, aiResponse),
       }))
       .sort((a, b) => b.aiScore - a.aiScore);
 
@@ -667,13 +681,13 @@ function extractKeywords(query: string): string[] {
 }
 
 // AI 추천 점수 계산
-function calculateAIScore(influencer: any, aiResponse: AIResponse, query: string): number {
+function calculateAIScore(influencer: Record<string, unknown>, aiResponse: AIResponse): number {
   let score = 0;
 
   // 카테고리 매칭 점수 (40점 만점)
   if (aiResponse.categories && influencer.categories) {
     const matchingCategories = aiResponse.categories.filter((cat) =>
-      influencer.categories.some((infCat: string) =>
+      (influencer.categories as string[]).some((infCat: string) =>
         infCat.toLowerCase().includes(cat.toLowerCase()),
       ),
     );
@@ -681,11 +695,11 @@ function calculateAIScore(influencer: any, aiResponse: AIResponse, query: string
   }
 
   // 참여율 점수 (30점 만점)
-  const engagementScore = Math.min(influencer.engagement_rate / 10, 1) * 30;
+  const engagementScore = Math.min((influencer.engagement_rate as number) / 10, 1) * 30;
   score += engagementScore;
 
   // 팔로워 수 점수 (20점 만점)
-  const followerScore = Math.min(influencer.followers / 1000000, 1) * 20;
+  const followerScore = Math.min((influencer.followers as number) / 1000000, 1) * 20;
   score += followerScore;
 
   // 인증 상태 점수 (10점 만점)

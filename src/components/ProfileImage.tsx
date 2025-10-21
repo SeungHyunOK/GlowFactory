@@ -11,7 +11,7 @@ interface ProfileImageProps {
 }
 
 export default function ProfileImage({ user, size = 32, className = "" }: ProfileImageProps) {
-  const [imageError, setImageError] = useState(false);
+  const [, setImageError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState<string>("");
 
   // Get the best available image URL

@@ -9,14 +9,16 @@ interface CacheItem<T> {
 
 // 메모리 캐시 클래스
 class MemoryCache {
-  private cache = new Map<string, CacheItem<any>>();
+  private cache = new Map<string, CacheItem<unknown>>();
   private maxSize = 1000; // 최대 캐시 항목 수
 
   set<T>(key: string, data: T, ttl: number = 5 * 60 * 1000): void {
     // 캐시 크기 제한
     if (this.cache.size >= this.maxSize) {
       const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
+      if (firstKey) {
+        this.cache.delete(firstKey);
+      }
     }
 
     this.cache.set(key, {
@@ -36,7 +38,7 @@ class MemoryCache {
       return null;
     }
 
-    return item.data;
+    return item.data as T;
   }
 
   clear(): void {
@@ -73,11 +75,12 @@ class RetryPolicy {
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
         return await operation();
-      } catch (error: any) {
-        lastError = error;
+      } catch (error: unknown) {
+        lastError = error as Error;
 
         // 429 (Rate Limit) 또는 403 (Quota Exceeded) 에러인 경우에만 재시도
-        if (error.status === 429 || error.status === 403) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((error as any).status === 429 || (error as any).status === 403) {
           if (attempt < this.maxRetries) {
             const delay = this.baseDelay * Math.pow(2, attempt); // 지수 백오프
             console.log(`API 재시도 ${attempt + 1}/${this.maxRetries} (${delay}ms 후)`);
@@ -243,7 +246,8 @@ export async function getYouTubeVideosBatch(videoIds: string[], channelId?: stri
             }
 
             // 2. 영상이 공개되어 있는지 확인
-            const privacyStatus = video.snippet?.privacyStatus;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const privacyStatus = (video.snippet as any)?.privacyStatus;
             if (privacyStatus !== "public") {
               console.log(`영상 ${video.id}는 비공개 영상입니다. 제외합니다.`);
               return false;
@@ -402,34 +406,36 @@ export function getCacheStats() {
 
 // YouTube 데이터를 인플루언서 데이터로 변환
 export function convertYouTubeToInfluencerDataOptimized(
-  channelData: any,
-  videosData: any[] = [],
-): any {
+  channelData: Record<string, unknown>,
+  videosData: Record<string, unknown>[] = [],
+): Record<string, unknown> {
   // 평균 좋아요 계산
-  const totalLikes = videosData.reduce((sum, video) => sum + video.likeCount, 0);
+  const totalLikes = videosData.reduce((sum, video) => sum + (video.likeCount as number), 0);
   const avgLikes = videosData.length > 0 ? Math.round(totalLikes / videosData.length) : 0;
 
   // 참여율 계산 (간단한 공식)
-  const totalViews = videosData.reduce((sum, video) => sum + video.viewCount, 0);
+  const totalViews = videosData.reduce((sum, video) => sum + (video.viewCount as number), 0);
   const totalEngagement = videosData.reduce(
-    (sum, video) => sum + video.likeCount + video.commentCount,
+    (sum, video) => sum + (video.likeCount as number) + (video.commentCount as number),
     0,
   );
   const engagementRate =
     totalViews > 0 ? Math.round((totalEngagement / totalViews) * 100 * 100) / 100 : 0;
 
   return {
-    name: channelData.title,
-    handle: channelData.title.toLowerCase().replace(/\s+/g, ""),
+    name: channelData.title as string,
+    handle: (channelData.title as string).toLowerCase().replace(/\s+/g, ""),
     platform: "youtube",
-    followers: channelData.subscriberCount,
+    followers: channelData.subscriberCount as number,
     engagement_rate: engagementRate,
     avg_likes: avgLikes,
-    categories: [category], // 카테고리는 별도로 설정
-    verified: channelData.subscriberCount > 1000000, // 100만 구독자 이상을 인증으로 간주
-    profile_image_url: channelData.thumbnails?.high?.url || channelData.thumbnails?.medium?.url,
-    bio: channelData.description,
-    total_views: channelData.viewCount,
-    video_count: channelData.videoCount,
+    categories: ["Lifestyle"], // 기본 카테고리
+    verified: (channelData.subscriberCount as number) > 1000000, // 100만 구독자 이상을 인증으로 간주
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    profile_image_url:
+      (channelData.thumbnails as any)?.high?.url || (channelData.thumbnails as any)?.medium?.url,
+    bio: channelData.description as string,
+    total_views: channelData.viewCount as number,
+    video_count: channelData.videoCount as number,
   };
 }

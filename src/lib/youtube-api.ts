@@ -95,7 +95,7 @@ export async function getYouTubeChannelVideos(channelId: string, maxResults: num
 
     const videosDetailsResponse = await youtube.videos.list({
       part: ["snippet", "statistics"],
-      id: videoIds,
+      id: videoIds.filter(Boolean) as string[],
     });
 
     if (!videosDetailsResponse.data.items) {
@@ -113,7 +113,8 @@ export async function getYouTubeChannelVideos(channelId: string, maxResults: num
         }
 
         // 2. 영상이 공개되어 있는지 확인
-        const privacyStatus = video.snippet?.privacyStatus;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const privacyStatus = (video.snippet as any)?.privacyStatus;
         if (privacyStatus !== "public") {
           console.log(`영상 ${video.id}는 비공개 영상입니다. 제외합니다.`);
           return false;
@@ -191,7 +192,7 @@ export async function searchYouTubeChannels(query: string, maxResults: number = 
 
     const channelsResponse = await youtube.channels.list({
       part: ["snippet", "statistics"],
-      id: channelIds,
+      id: channelIds.filter(Boolean) as string[],
     });
 
     return (
@@ -215,14 +216,15 @@ export async function searchYouTubeChannels(query: string, maxResults: number = 
 
 // YouTube 데이터를 GoogleInfluencerData 형식으로 변환하는 함수
 export function convertYouTubeToInfluencerData(
-  channelData: any,
-  videosData: any[] = [],
+  channelData: Record<string, unknown>,
+  videosData: Record<string, unknown>[] = [],
 ): GoogleInfluencerData {
   // 평균 조회수 계산
   const avgViews =
     videosData.length > 0
       ? Math.round(
-          videosData.reduce((sum, video) => sum + (video.viewCount || 0), 0) / videosData.length,
+          videosData.reduce((sum, video) => sum + ((video.viewCount as number) || 0), 0) /
+            videosData.length,
         )
       : 0;
 
@@ -230,7 +232,8 @@ export function convertYouTubeToInfluencerData(
   const avgLikes =
     videosData.length > 0
       ? Math.round(
-          videosData.reduce((sum, video) => sum + (video.likeCount || 0), 0) / videosData.length,
+          videosData.reduce((sum, video) => sum + ((video.likeCount as number) || 0), 0) /
+            videosData.length,
         )
       : 0;
 
@@ -238,16 +241,18 @@ export function convertYouTubeToInfluencerData(
   const engagementRate = avgViews > 0 ? (avgLikes / avgViews) * 100 : 0;
 
   return {
-    name: channelData.title,
-    handle: channelData.customUrl || channelData.id,
+    name: channelData.title as string,
+    handle: (channelData.customUrl as string) || (channelData.id as string),
     platform: "youtube",
-    followers: channelData.subscriberCount,
+    followers: channelData.subscriberCount as number,
     engagement_rate: Math.round(engagementRate * 100) / 100, // 소수점 둘째 자리까지
     avg_likes: avgLikes,
     categories: ["YouTube", "Content Creator"], // 기본 카테고리
     verified: false, // YouTube API에서 직접 확인할 수 없으므로 기본값
-    profile_image_url: channelData.thumbnails?.high?.url || channelData.thumbnails?.default?.url,
-    bio: channelData.description,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    profile_image_url:
+      (channelData.thumbnails as any)?.high?.url || (channelData.thumbnails as any)?.default?.url,
+    bio: channelData.description as string,
     location: "", // YouTube API에서 직접 제공하지 않음
   };
 }

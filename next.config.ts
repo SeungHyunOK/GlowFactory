@@ -36,7 +36,6 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: [
       "@supabase/supabase-js",
       "framer-motion",
@@ -49,7 +48,6 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   compress: true,
-  swcMinify: true,
   reactStrictMode: true,
   generateEtags: false,
   httpAgentOptions: {
