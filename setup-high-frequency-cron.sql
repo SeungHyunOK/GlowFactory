@@ -4,10 +4,18 @@
 -- 1. pg_cron 확장 활성화
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- 2. 기존 Cron Job들 삭제
-SELECT cron.unschedule('random-influencer-sync-8h');
-SELECT cron.unschedule('mass-influencer-sync-2h');
-SELECT cron.unschedule('high-frequency-sync-1h');
+-- 2. 기존 Cron Job들 삭제 (오류 방지를 위해 조건부 삭제)
+DO $$
+BEGIN
+    -- 존재하는 job만 삭제
+    IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'random-influencer-sync-8h') THEN
+        PERFORM cron.unschedule('random-influencer-sync-8h');
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'high-frequency-sync-1h') THEN
+        PERFORM cron.unschedule('high-frequency-sync-1h');
+    END IF;
+END $$;
 
 -- 3. 1시간마다 고빈도 수집 Cron Job 생성
 SELECT cron.schedule(
@@ -16,7 +24,7 @@ SELECT cron.schedule(
   $$
   SELECT
     net.http_post(
-      url := 'https://mwxwwaljfbbtwuerevcx.supabase.co/functions/v1/sync-youtube-data',
+      url := 'https://mwxwwaljfbbtwuerevcx.supabase.co/functions/v1/test-dummy-data',
       headers := '{"Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13eHd3YWxqZmJidHd1ZXJldmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyOTMwMzIsImV4cCI6MjA3Mzg2OTAzMn0.-6zg7LyylocpOmYGWOfuiVdo_tH_sQLyCvHg-TW-MMU"}'::jsonb,
       body := '{}'::jsonb
     ) as request_id;

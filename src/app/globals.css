@@ -24,3 +24,58 @@
     "Apple Color Emoji",
     "Segoe UI Symbol";
 }
+
+/* 성능 최적화 스타일 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* GPU 가속을 위한 최적화 */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 애니메이션 성능 최적화 */
+.animate-optimized {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 이미지 최적화 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 스크롤 성능 최적화 */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 폰트 로딩 최적화 */
+.font-loading {
+  font-display: swap;
+}
+
+/* 레이아웃 시프트 방지 */
+.aspect-ratio {
+  aspect-ratio: 16/9;
+}
+
+/* 미디어 쿼리 최적화 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

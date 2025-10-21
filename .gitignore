@@ -50,5 +50,11 @@ coverage/
 # TypeScript
 *.tsbuildinfo
 
+# Data files
+*.csv
+
+# Test data
+**/test-dummy-data/
+
 # Misc
 *.pem

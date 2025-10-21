@@ -13,7 +13,7 @@ jobs:
         run: |
           echo "대용량 인플루언서 데이터 수집 시작..."
           curl -X POST \
-            'https://mwxwwaljfbbtwuerevcx.supabase.co/functions/v1/sync-youtube-data' \
+            'https://mwxwwaljfbbtwuerevcx.supabase.co/functions/v1/test-dummy-data' \
             -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13eHd3YWxqZmJidHd1ZXJldmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyOTMwMzIsImV4cCI6MjA3Mzg2OTAzMn0.-6zg7LyylocpOmYGWOfuiVdo_tH_sQLyCvHg-TW-MMU' \
             -H 'Content-Type: application/json' \
             -d '{}'
