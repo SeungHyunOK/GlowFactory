@@ -13,16 +13,18 @@ export default function Navigation() {
 
   return (
     <nav
-      className="sticky top-0 z-50 border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60"
+      className="fixed top-0 left-0 right-0 z-50 bg-transparent"
       role="navigation"
       aria-label="Main navigation"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Brand */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2" aria-label="Go to homepage">
-              <span className="text-2xl font-bold text-gray-900 font-custom">GlowFactory</span>
+              <span className="text-3xl font-bold text-white font-custom drop-shadow-lg">
+                GlowFactory
+              </span>
             </Link>
           </div>
 
@@ -30,7 +32,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <button
               onClick={toggleLanguage}
-              className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-md"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-black/20 border border-white/30 rounded-full hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/50 transition-all duration-300 cursor-pointer hover:scale-105 backdrop-blur-sm"
               aria-label="Toggle language"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -34,8 +34,8 @@ FadeInUp.displayName = "FadeInUp";
 
 // 세련된 배경 컴포넌트
 const ParticleBackground = () => (
-  <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.05),transparent_50%)]"></div>
+  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05),transparent_50%)]"></div>
   </div>
 );
 
@@ -240,9 +240,9 @@ export default function Home() {
   const t = content[language];
 
   return (
-    <div className="min-h-screen bg-white text-black overflow-hidden">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center">
+      <section className="relative min-h-screen flex items-center justify-center pt-20">
         <ParticleBackground />
 
         <div className="relative z-10 text-center px-6 max-w-7xl mx-auto">
@@ -252,11 +252,11 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-none">
-              <span className="block bg-gradient-to-r from-gray-800 to-black bg-clip-text text-transparent">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tight font-custom">
+              <span className="block bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent drop-shadow-2xl">
                 GLOW
               </span>
-              <span className="block text-black">FACTORY</span>
+              <span className="block text-white drop-shadow-lg">FACTORY</span>
             </h1>
           </motion.div>
 
@@ -266,10 +266,10 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-12"
           >
-            <h2 className="text-2xl md:text-4xl font-light text-gray-600 mb-4">
+            <h2 className="text-3xl md:text-5xl font-light text-gray-300 mb-6 tracking-wide">
               {t.hero.subtitle}
             </h2>
-            <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
               {t.hero.description}
             </p>
           </motion.div>
@@ -278,13 +278,19 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex justify-center"
+            className="flex flex-col sm:flex-row gap-8 justify-center mt-12"
           >
             <a
               href={`mailto:glowfactory2112@gmail.com?subject=${t.cta.email.subject}&body=${t.cta.email.body}`}
-              className="inline-flex items-center px-8 py-4 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
+              className="group inline-flex items-center px-16 py-6 bg-white text-black font-bold text-xl rounded-full hover:bg-gray-100 transition-all duration-500 transform hover:scale-110 hover:shadow-2xl hover-lift hover-glow"
             >
-              {t.buttons.start}
+              For Brands
+            </a>
+            <a
+              href={`mailto:glowfactory2112@gmail.com?subject=${t.cta.email.subject}&body=${t.cta.email.body}`}
+              className="group inline-flex items-center px-16 py-6 bg-transparent text-white font-bold text-xl rounded-full border-2 border-white hover:bg-white hover:text-black transition-all duration-500 transform hover:scale-110 hover:shadow-2xl hover-lift hover-glow"
+            >
+              For Creators
             </a>
           </motion.div>
         </div>
@@ -299,37 +305,37 @@ export default function Home() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-black rounded-full flex justify-center"
+            className="w-6 h-10 border-2 border-white rounded-full flex justify-center"
           >
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-1 h-3 bg-black rounded-full mt-2"
+              className="w-1 h-3 bg-white rounded-full mt-2"
             />
           </motion.div>
         </motion.div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-100">
+      <section className="py-20 bg-gray-900">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
             <FadeInUp delay={0.1}>
               <div>
                 <Counter end={10000} />
-                <p className="text-xl text-gray-600 mt-4">{t.stats.creators}</p>
+                <p className="text-xl text-gray-300 mt-4">{t.stats.creators}</p>
               </div>
             </FadeInUp>
             <FadeInUp delay={0.2}>
               <div>
                 <Counter end={5000} />
-                <p className="text-xl text-gray-600 mt-4">{t.stats.brands}</p>
+                <p className="text-xl text-gray-300 mt-4">{t.stats.brands}</p>
               </div>
             </FadeInUp>
             <FadeInUp delay={0.3}>
               <div>
                 <Counter end={95} />
-                <p className="text-xl text-gray-600 mt-4">{t.stats.success}</p>
+                <p className="text-xl text-gray-300 mt-4">{t.stats.success}</p>
               </div>
             </FadeInUp>
           </div>
@@ -337,11 +343,13 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-40 bg-white">
+      <section id="features" className="py-40 bg-black">
         <div className="max-w-7xl mx-auto px-6">
           <FadeInUp>
-            <h2 className="text-5xl md:text-7xl font-black text-center mb-20">
-              {t.features.title}
+            <h2 className="text-6xl md:text-8xl font-black text-center mb-24 tracking-tight">
+              <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+                {t.features.title}
+              </span>
             </h2>
           </FadeInUp>
 
@@ -349,19 +357,19 @@ export default function Home() {
             {/* For Creators */}
             <FadeInUp delay={0.1}>
               <div className="group">
-                <div className="group bg-white p-10 rounded-3xl border-2 border-gray-200 hover:border-gray-400 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="group bg-gray-900 p-10 rounded-3xl border-2 border-gray-700 hover:border-gray-500 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl relative overflow-hidden hover-lift hover-glow">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
-                    <h3 className="text-5xl font-black mb-8 text-black tracking-tight">
+                    <h3 className="text-5xl font-black mb-8 text-white tracking-tight">
                       {t.features.forCreators.title}
                     </h3>
-                    <p className="text-xl text-gray-600 mb-10 leading-relaxed font-light">
+                    <p className="text-xl text-gray-300 mb-10 leading-relaxed font-light">
                       {t.features.forCreators.description}
                     </p>
-                    <ul className="space-y-6 text-gray-700">
+                    <ul className="space-y-6 text-gray-300">
                       {t.features.forCreators.features.map((feature, index) => (
                         <li key={index} className="flex items-center group/item">
-                          <span className="w-3 h-3 bg-gradient-to-r from-black to-gray-600 rounded-full mr-6 group-hover/item:scale-125 transition-transform duration-300"></span>
+                          <span className="w-3 h-3 bg-gradient-to-r from-white to-gray-400 rounded-full mr-6 group-hover/item:scale-125 transition-transform duration-300"></span>
                           <span className="text-lg font-medium">{feature}</span>
                         </li>
                       ))}
@@ -374,19 +382,19 @@ export default function Home() {
             {/* For Brands */}
             <FadeInUp delay={0.2}>
               <div className="group">
-                <div className="group bg-white p-10 rounded-3xl border-2 border-gray-200 hover:border-gray-400 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="group bg-gray-900 p-10 rounded-3xl border-2 border-gray-700 hover:border-gray-500 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl relative overflow-hidden hover-lift hover-glow">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
-                    <h3 className="text-5xl font-black mb-8 text-black tracking-tight">
+                    <h3 className="text-5xl font-black mb-8 text-white tracking-tight">
                       {t.features.forBrands.title}
                     </h3>
-                    <p className="text-xl text-gray-600 mb-10 leading-relaxed font-light">
+                    <p className="text-xl text-gray-300 mb-10 leading-relaxed font-light">
                       {t.features.forBrands.description}
                     </p>
-                    <ul className="space-y-6 text-gray-700">
+                    <ul className="space-y-6 text-gray-300">
                       {t.features.forBrands.features.map((feature, index) => (
                         <li key={index} className="flex items-center group/item">
-                          <span className="w-3 h-3 bg-gradient-to-r from-black to-gray-600 rounded-full mr-6 group-hover/item:scale-125 transition-transform duration-300"></span>
+                          <span className="w-3 h-3 bg-gradient-to-r from-white to-gray-400 rounded-full mr-6 group-hover/item:scale-125 transition-transform duration-300"></span>
                           <span className="text-lg font-medium">{feature}</span>
                         </li>
                       ))}
@@ -400,28 +408,30 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-40 bg-gray-100">
+      <section className="py-40 bg-gray-900">
         <div className="max-w-7xl mx-auto px-6">
           <FadeInUp>
-            <h2 className="text-5xl md:text-7xl font-black text-center mb-20">
-              {t.services.title}
+            <h2 className="text-6xl md:text-8xl font-black text-center mb-24 tracking-tight">
+              <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+                {t.services.title}
+              </span>
             </h2>
           </FadeInUp>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {t.services.items.map((service, index) => (
               <FadeInUp key={index} delay={index * 0.1}>
-                <div className="group">
-                  <div className="group bg-white p-10 rounded-3xl border-2 border-gray-200 hover:border-gray-400 transition-all duration-500 transform hover:scale-110 hover:shadow-2xl relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="w-20 h-20 bg-gradient-to-br from-black to-gray-700 rounded-3xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform duration-300">
+                <div className="group h-full">
+                  <div className="group bg-gray-800 p-10 rounded-3xl border-2 border-gray-600 hover:border-gray-400 transition-all duration-500 transform hover:scale-110 hover:shadow-2xl relative overflow-hidden hover-lift hover-glow h-full flex flex-col">
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="relative z-10 flex flex-col h-full">
+                      <div className="w-20 h-20 bg-gradient-to-br from-white to-gray-300 rounded-3xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                         {["🤖", "📊", "📈"][index]}
                       </div>
-                      <h3 className="text-3xl font-black mb-6 text-black tracking-tight">
+                      <h3 className="text-3xl font-black mb-6 text-white tracking-tight flex-shrink-0">
                         {service.title}
                       </h3>
-                      <p className="text-lg text-gray-600 leading-relaxed font-light">
+                      <p className="text-lg text-gray-300 leading-relaxed font-light flex-grow">
                         {service.description}
                       </p>
                     </div>
